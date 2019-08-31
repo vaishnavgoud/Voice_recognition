@@ -1,0 +1,55 @@
+body {
+  margin: 50px auto;
+  max-width: 600px;
+}
+
+.App {
+  &__input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #E4FDE1;
+    border: 2px solid #456990;
+    padding: 20px;
+    outline: none;
+    font-size: 1.4rem;
+  }
+  
+  &__button {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #456990;
+    border: 3px solid #456990;
+    border-radius: 5px;
+    margin: 5px 0;
+    color: white;
+    font-size: 1.5rem;
+    padding: 15px 0;
+    &:active {
+      background-color: #F45B69;
+    }
+    &:focus {
+      outline: none;
+      border: 3px solid #F45B69;
+    }
+  }
+  
+  &__auto-typing {
+    min-height: 150px;
+    background-color: #114B5F;
+    padding: 20px;
+    box-sizing: border-box;
+    color: white;
+    font-size: 1.2rem;
+    font-family: Helvetica;
+    letter-spacing: 2px;
+  }
+  &__notes {
+    background-color: lightblue;
+    min-height: 150px;
+    font-family:fantasy;
+    padding:16px;
+    font-weight:bold;
+  }
+}

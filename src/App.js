@@ -1,26 +1,111 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import './App.scss';
 
 function App() {
+  const [currentContent, setCurrent] = React.useState('');
+  const [buttonContent, setButtonContent] = React.useState('Start Speaking');
+  const [notesContent, setNotesContent] = React.useState(null);
+  const [toggleEffect, setToggleEffect] = React.useState(true);
+  
+  React.useEffect(() => {
+   const getAllNotes = () => {
+    var notes = [];
+    var key;
+    for (var i = 0; i < localStorage.length; i++) {
+      key = localStorage.key(i);
+
+      if(key.substring(0,5) === 'note-') {
+        notes.push({
+          date: key,
+          content: localStorage.getItem(localStorage.key(i))
+        });
+      } 
+    }
+    return notes;
+  }
+   setNotesContent(getAllNotes);
+    }, [toggleEffect]);
+
+  try {
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+  }
+  catch(e) {
+    console.error(e);
+  };
+  
+  recognition.onstart = () => { 
+  setButtonContent('Voice recognition activated. Try speaking into the microphone.');
+  };
+
+  recognition.onspeechend = () => {
+    setButtonContent('You were quiet for a while so voice recognition turned itself off. Click again to start');
+  };
+
+  recognition.onerror = (event) => {
+    if(event.error === 'no-speech') {
+      setButtonContent('No speech was detected. Try again.');  
+    };
+  }
+  
+  var noteContent = '';
+  
+  recognition.onresult = (event) => {
+
+  var current = event.resultIndex;
+
+  var transcript = event.results[current][0].transcript;
+  noteContent += transcript;
+  setCurrent(noteContent);
+  };
+  
+  const handleStartClick=()=>{
+    recognition.start();
+  };
+  
+  const saveNote = (dateTime, content) => {
+    localStorage.setItem('note-' + dateTime, content);
+  };
+  
+  const handleSaveNotes = () => {
+    recognition.stop();
+    if(currentContent){
+      saveNote(new Date().toLocaleString(), currentContent);
+      setToggleEffect(!toggleEffect);
+    }
+    else{
+      alert('Empty Content')
+    }
+  };
+  
+  const handleDeleteClick = (e,data) => {
+    if(data){
+      console.log(data);
+      localStorage.removeItem(data);
+      setToggleEffect(!toggleEffect);
+    }
+  }
+
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button className="App__button" onClick={handleStartClick}>{buttonContent}</button>
+      <div className="App__auto-typing">
+        {currentContent}
+      </div>
+<button className="App__button" onClick={handleSaveNotes}>Save Notes</button>
+      <div className="App__notes">
+        {notesContent && notesContent.map((note,i) => {
+          return(
+            <div key={i}>{i+1}) {note.content}
+              <button key={i} type='button' onClick={e => handleDeleteClick(e,(note.date))}>delete</button>
+            </div>
+          );
+        })}
+      </div>
     </div>
-  );
+  )
 }
 
 export default App;
