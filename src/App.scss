@@ -51,5 +51,16 @@ body {
     font-family:fantasy;
     padding:16px;
     font-weight:bold;
+
+    &_content{
+      display: flex;
+      justify-content: space-between;
+
+      &_button{
+        font-family: fantasy;
+        background-color: white;
+        padding:2px;
+      }
+    }
   }
 }

@@ -1,7 +1,10 @@
 import React from 'react';
 import './App.scss';
+import NavBar from "./components/Navbar";
+import { useAuth0 } from "./react-auth0-wrapper";
 
 function App() {
+  const { loading } = useAuth0();
   const [currentContent, setCurrent] = React.useState('');
   const [buttonContent, setButtonContent] = React.useState('Start Speaking');
   const [notesContent, setNotesContent] = React.useState(null);
@@ -87,9 +90,17 @@ function App() {
     }
   }
 
+  if (loading) {
+    return (
+      <div>Loading...</div>
+    );
+  }
   
   return (
     <div className="App">
+      <header>
+        <NavBar />
+      </header>
       <button className="App__button" onClick={handleStartClick}>{buttonContent}</button>
       <div className="App__auto-typing">
         {currentContent}
@@ -98,8 +109,8 @@ function App() {
       <div className="App__notes">
         {notesContent && notesContent.map((note,i) => {
           return(
-            <div key={i}>{i+1}) {note.content}
-              <button key={i} type='button' onClick={e => handleDeleteClick(e,(note.date))}>delete</button>
+            <div className="App__notes_content" key={i}>{i+1}) {note.content}
+              <button className="App__notes_content_button" key={i} type='button' onClick={e => handleDeleteClick(e,(note.date))}>delete</button>
             </div>
           );
         })}
