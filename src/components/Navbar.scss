@@ -1,0 +1,28 @@
+.Navbar {
+  min-height: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border: 3px solid #114b5f;
+  border-radius: 5px;
+
+  &__login,
+  &__logout {
+    cursor: pointer;
+    background: #456990;
+    color: white;
+    font-size: 16px;
+    padding: 5px;
+    border-radius: 5px;
+  }
+
+  a {
+    color: #0072ce;
+    &:active,
+    &:focus,
+    &:hover {
+      color: #003791;
+    }
+  }
+}
