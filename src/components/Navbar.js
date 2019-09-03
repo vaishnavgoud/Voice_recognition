@@ -7,7 +7,7 @@ const NavBar = () => {
 
   return (
     <div className="Navbar">
-      {isAuthenticated && (
+      { (
         <>
           <Link to="/" className="Navbar__HomeLink">
             Home
@@ -15,6 +15,7 @@ const NavBar = () => {
           <Link to="/profile" className="Navbar__ProfileLink">
             Profile
           </Link>
+          <Link to="/external-api">External API</Link>
         </>
       )}
       {!isAuthenticated && (
