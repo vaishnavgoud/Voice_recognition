@@ -5,6 +5,8 @@ const jwksRsa = require("jwks-rsa");
 // Create a new Express app
 const app = express();
 
+var port = process.env.PORT || 3001;
+
 // Set up Auth0 configuration
 const authConfig = {
   domain: "dev-vaishnav.auth0.com",
@@ -34,4 +36,4 @@ app.get("/api/external", checkJwt, (req, res) => {
 });
 
 // Start the app
-app.listen(3001, () => console.log('API listening on 3001'));
+app.listen(port, () => console.log('API listening on 3001'));
