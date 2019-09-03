@@ -14,7 +14,7 @@ function App() {
           <NavBar />
         </header>
         <Switch>
-          <Route path="/" component={VoiceNotes}/>
+          <Route path="/" exact component={VoiceNotes}/>
           <Route path="/profile" component={Profile} />
         </Switch>
       </BrowserRouter>
