@@ -1,8 +1,9 @@
 import React from "react";
+import axios from 'axios';
 import { useAuth0 } from "../react-auth0-wrapper";
 
 const VoiceNotes = () => {
-  const { loading } = useAuth0();
+  const { loading, user } = useAuth0();
   const [currentContent, setCurrent] = React.useState("");
   const [buttonContent, setButtonContent] = React.useState("Start Speaking");
   const [notesContent, setNotesContent] = React.useState(null);
@@ -10,22 +11,30 @@ const VoiceNotes = () => {
 
   React.useEffect(() => {
     const getAllNotes = () => {
-      var notes = [];
-      var key;
-      for (var i = 0; i < localStorage.length; i++) {
-        key = localStorage.key(i);
-
-        if (key.substring(0, 5) === "note-") {
-          notes.push({
-            date: key,
-            content: localStorage.getItem(localStorage.key(i))
-          });
-        }
+      if(user){
+          fetch('http://localhost:3001/api/getData')
+            .then((data) => data.json())
+            .then((res) => {return res.data});
       }
-      return notes;
+      else {
+        var notes = [];
+        var key;
+        for (var i = 0; i < localStorage.length; i++) {
+          key = localStorage.key(i);
+  
+          if (key.substring(0, 5) === "note-") {
+            notes.push({
+              date: key,
+              content: localStorage.getItem(localStorage.key(i))
+            });
+          }
+        }
+        return notes;
+      }
     };
+
     setNotesContent(getAllNotes);
-  }, [toggleEffect]);
+  }, [toggleEffect,user]);
 
   try {
     var SpeechRecognition =
@@ -54,10 +63,10 @@ const VoiceNotes = () => {
     }
   };
 
-  var noteContent = "";
 
   recognition.onresult = event => {
     var current = event.resultIndex;
+    var noteContent = "";
 
     var transcript = event.results[current][0].transcript;
     noteContent += transcript;
@@ -69,7 +78,13 @@ const VoiceNotes = () => {
   };
 
   const saveNote = (dateTime, content) => {
-    localStorage.setItem("note-" + dateTime, content);
+    if(user){
+      axios.post('http://localhost:3001/api/putData', {
+        id: `note-${dateTime}`,
+        message: content,
+      });
+    }
+    else localStorage.setItem("note-" + dateTime, content);
   };
 
   const handleSaveNotes = () => {
@@ -84,8 +99,14 @@ const VoiceNotes = () => {
 
   const handleDeleteClick = (e, data) => {
     if (data) {
-      console.log(data);
-      localStorage.removeItem(data);
+      if(user){
+        axios.delete('http://localhost:3001/api/deleteData', {
+          data: {
+            id: data,
+          },
+        });
+      }
+      else localStorage.removeItem(data);
       setToggleEffect(!toggleEffect);
     }
   };
