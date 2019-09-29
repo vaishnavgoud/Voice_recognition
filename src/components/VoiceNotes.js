@@ -12,9 +12,10 @@ const VoiceNotes = () => {
   React.useEffect(() => {
     const getAllNotes = () => {
       if(user){
-          fetch('http://localhost:3001/api/getData')
+          fetch('/api/getData')
             .then((data) => data.json())
             .then((res) => {return res.data});
+            console.log(res.data);
       }
       else {
         var notes = [];
@@ -79,7 +80,7 @@ const VoiceNotes = () => {
 
   const saveNote = (dateTime, content) => {
     if(user){
-      axios.post('http://localhost:3001/api/putData', {
+      axios.post('/api/putData', {
         id: `note-${dateTime}`,
         message: content,
       });
@@ -100,7 +101,7 @@ const VoiceNotes = () => {
   const handleDeleteClick = (e, data) => {
     if (data) {
       if(user){
-        axios.delete('http://localhost:3001/api/deleteData', {
+        axios.delete('/api/deleteData', {
           data: {
             id: data,
           },
